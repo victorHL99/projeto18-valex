@@ -9,6 +9,6 @@ export default function validateSchema(schema) {
         message: error.details.map(e => e.message).join(", "),
         };
       }
+      next();
     }
-    next();
   };

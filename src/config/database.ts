@@ -1,5 +1,7 @@
 import pg from 'pg';
-import './setup';
+import dotenv from 'dotenv';
+import "./setup.js"
+dotenv.config();
 
 const { Pool } = pg;
 
@@ -11,8 +13,8 @@ const devConfig = {
   database: process.env.POSTGRES_DATABASE,
 }
 
-const prodConfig = {
-  connectionString: process.env.DATABASE_URL,
+const prodConfig:any = {
+  connectionString: process.env.DATABASE_URL
 }
 
 if(process.env.MODE === "PROD"){
@@ -21,6 +23,6 @@ if(process.env.MODE === "PROD"){
   }
 }
 
-const database = new Pool(process.env.MODE === "PROD" ? prodConfig : devConfig);
+const connection = new Pool(process.env.MODE === "PROD" ? prodConfig : devConfig);
 
-export default database;
+export default connection;
