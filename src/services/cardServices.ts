@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import dayjs from 'dayjs';
 
 import * as employeeRepository from "../repositories/employeeRepository.js"
 import * as cardRepository from "../repositories/cardRepository.js"
@@ -6,6 +7,10 @@ import * as cardRepository from "../repositories/cardRepository.js"
 import {generateCardName} from "./employeeServices.js"
 
 
+
+async function generateExpireDate(){
+  return dayjs().add(5, 'year').format('MM/YY');
+}
 
 async function verifyConditionsCard(idEmployee:number, cardType:any, company:any){
   //verify card exist by idEmployee and cardType
@@ -61,9 +66,18 @@ async function createCard(
   originalCardId:number){
 
     const cardName:string = await generateCardName(employeeName);
-    console.log(cardName);
     const cardNumber:string = faker.finance.creditCardNumber('63[7-9]#-####-####-###L')
-    console.log(cardNumber);
+    const expireDate:string =  await generateExpireDate();
+    const cvv:string = faker.finance.creditCardCVV();
+    
+
+    return {
+      cardName: cardName,
+      cardNumber: cardNumber,
+      expireDate: expireDate,
+      cvv: cvv,
+    }
+
 
 }
 
