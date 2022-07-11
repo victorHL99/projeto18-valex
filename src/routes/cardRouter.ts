@@ -9,6 +9,6 @@ import schemaValidate from '../middlewares/schemaValidate.js';
 import cardSchema from '../schemas/cardSchema.js';
 const cardRouter = Router();
 
-cardRouter.post("/card/create/:IdEmployee", apiKeyValidate, schemaValidate(cardSchema), cardController.createCard);
+cardRouter.post("/card/create", apiKeyValidate, schemaValidate(cardSchema), cardController.createCard);
 
 export default cardRouter;
