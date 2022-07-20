@@ -51,8 +51,22 @@ async function createCard(req: Request, res: Response){
 }
 
 async function activeCard(req: Request, res: Response){
-  const password:string = req.body.password;
-  const id:number = req.locals.card.id;
+  const {cardNumber, securityCode, password}:{cardNumber:string, securityCode:string, password:string} = req.body;
+  const cardId:number = parseInt(req.params.cardId);
+
+  const resultCheckCardId:any = await cardServices.findCardById(cardId);
+  const resultCardExpired:any = await cardServices.checkCardExpired(cardId);
+  const resultCheckCardIsYours:any = await cardServices.checkCardIsYours(cardId, cardNumber);
+  const resultCheckActivedCard:any = await cardServices.checkActivedCard(cardId);
+  const resultCheckCvv:any = await cardServices.checkCvv(cardId, securityCode);
+
+  console.log(resultCheckCardId)
+  console.log(resultCardExpired)
+  console.log(resultCheckCardIsYours)
+  console.log(resultCheckActivedCard)
+  console.log(resultCheckCvv)
+
+  res.status(200).json("ok");
 }
 
 const cardController = {

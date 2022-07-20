@@ -92,10 +92,98 @@ async function activeCard(){
 
 }
 
+async function findCardById(cardId:number){
+  const cardExist:any = await cardRepository.findById(cardId);
+  if(!cardExist){
+    throw {
+      status: 404,
+      message: "Card not found"
+    }
+  }
+
+  return {
+    CardExist:true
+  };
+}
+
+async function checkCardExpired(cardId:number){
+  const cardExist:any = await cardRepository.findById(cardId);
+  const today:any = dayjs().format('MM/YY');
+  if(today > cardExist.expirationDate){
+    throw {
+      status: 400,
+      message: "Card expired"
+    }
+  }
+  return {
+    CardNotExpired: true
+  }
+}
+
+async function checkCardIsYours(cardId:number, cardNumber:string){
+  const cardExist:any = await cardRepository.findById(cardId);
+  const cardNumberRearranged = await organizeCardNumber(cardNumber);
+  console.log(cardNumberRearranged);
+  console.log(cardExist.number);
+  if(cardExist.number !== cardNumberRearranged){
+    throw {
+      status: 400,
+      message: "Card not yours"
+    }
+  }
+  return {
+    CardIsYours: true
+  }
+}
+
+async function organizeCardNumber(value:any){
+  value = value.replace(/\D/g, "");
+  return value.match(/\d{1,4}/g).join('-');
+}
+
+async function checkActivedCard(cardId:number){
+  const cardExist:any = await cardRepository.findById(cardId);
+  if(cardExist.password !== null){
+    throw {
+      status: 400,
+      message: "Card is actived"
+    }
+  }
+  return {
+    CardNotActived: true
+  }
+}
+
+async function checkCvv(cardId:number, securityCode:string){
+  const cryptr = new Cryptr(process.env.SECRET_KEY_CRYPTR);
+
+  const cardExist:any = await cardRepository.findById(cardId);
+  const decryptedSecurityCodeDataBase:string = cryptr.decrypt(cardExist.securityCode);
+  const decryptedSecurityCode:string = cryptr.decrypt(securityCode);
+
+  console.log(decryptedSecurityCodeDataBase);
+  console.log(decryptedSecurityCode);
+
+  if(decryptedSecurityCodeDataBase !== decryptedSecurityCode){
+    throw {
+      status: 400,
+      message: "Security code is not valid"
+    }
+  }
+  return {
+    CvvIsValid: true
+  }
+}
+
 const cardServices = {
   createCard,
   verifyConditionsCard,
-  activeCard
+  activeCard,
+  findCardById,
+  checkCardExpired,
+  checkCardIsYours,
+  checkActivedCard,
+  checkCvv
 }
 
 export default cardServices;
