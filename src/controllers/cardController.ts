@@ -59,14 +59,19 @@ async function activeCard(req: Request, res: Response){
   const resultCheckCardIsYours:any = await cardServices.checkCardIsYours(cardId, cardNumber);
   const resultCheckActivedCard:any = await cardServices.checkActivedCard(cardId);
   const resultCheckCvv:any = await cardServices.checkCvv(cardId, securityCode);
+  const resultEncryptPassword:any = await cardServices.encryptPassword(password);
+
+  const resultActiveCard:any = await cardServices.activeCard(cardId, resultEncryptPassword);
 
   console.log(resultCheckCardId)
   console.log(resultCardExpired)
   console.log(resultCheckCardIsYours)
   console.log(resultCheckActivedCard)
   console.log(resultCheckCvv)
+  console.log(resultEncryptPassword)
+  console.log(resultActiveCard)
 
-  res.status(200).json("ok");
+  res.status(200).json(resultActiveCard);
 }
 
 const cardController = {

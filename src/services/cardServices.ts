@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import dayjs from 'dayjs';
 import Cryptr from "cryptr";
+import bcrypt from 'bcrypt';
 
 import * as employeeRepository from "../repositories/employeeRepository.js"
 import * as cardRepository from "../repositories/cardRepository.js"
@@ -88,9 +89,6 @@ async function createCard(
 
 }
 
-async function activeCard(){
-
-}
 
 async function findCardById(cardId:number){
   const cardExist:any = await cardRepository.findById(cardId);
@@ -175,6 +173,25 @@ async function checkCvv(cardId:number, securityCode:string){
   }
 }
 
+async function encryptPassword(password:string){
+  const hashPassword = await bcrypt.hash(password, 10);
+
+  return hashPassword;
+}
+async function activeCard(cardId:number, resultEncryptPassword:string){
+  const cardData:any = await cardRepository.findById(cardId);
+  console.log(cardData);
+  cardData.password = resultEncryptPassword;
+  console.log(cardData);
+  await cardRepository.update(cardData.id, cardData);
+
+  return cardData;
+  
+
+}
+
+
+
 const cardServices = {
   createCard,
   verifyConditionsCard,
@@ -183,7 +200,8 @@ const cardServices = {
   checkCardExpired,
   checkCardIsYours,
   checkActivedCard,
-  checkCvv
+  checkCvv,
+  encryptPassword
 }
 
 export default cardServices;
