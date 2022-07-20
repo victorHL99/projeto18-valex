@@ -74,18 +74,12 @@ async function getBalanceByCard(req: Request, res: Response){
   const resultCheckRecharge:any = await cardServices.checkRecharge(cardId);
   const resultCheckBalance:any = await cardServices.getBalanceByCard(cardId, resultCheckPayment, resultCheckRecharge);
 
-  console.log(resultCheckPayment);
-  console.log(resultCheckRecharge);
-  console.log(resultCheckBalance);
-
   const finalBalance = {
     balance: resultCheckBalance,
     transactions: resultCheckPayment,
     recharges: resultCheckRecharge
   }
-
-
-
+  
   res.status(200).json(finalBalance);
 }
 
