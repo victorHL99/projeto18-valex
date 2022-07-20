@@ -63,14 +63,6 @@ async function activeCard(req: Request, res: Response){
 
   const resultActiveCard:any = await cardServices.activeCard(cardId, resultEncryptPassword);
 
-  console.log(resultCheckCardId)
-  console.log(resultCardExpired)
-  console.log(resultCheckCardIsYours)
-  console.log(resultCheckActivedCard)
-  console.log(resultCheckCvv)
-  console.log(resultEncryptPassword)
-  console.log(resultActiveCard)
-
   res.status(200).json(resultActiveCard);
 }
 

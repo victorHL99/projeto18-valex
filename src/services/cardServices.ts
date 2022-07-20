@@ -89,7 +89,6 @@ async function createCard(
 
 }
 
-
 async function findCardById(cardId:number){
   const cardExist:any = await cardRepository.findById(cardId);
   if(!cardExist){
@@ -178,6 +177,7 @@ async function encryptPassword(password:string){
 
   return hashPassword;
 }
+
 async function activeCard(cardId:number, resultEncryptPassword:string){
   const cardData:any = await cardRepository.findById(cardId);
   console.log(cardData);
@@ -189,8 +189,6 @@ async function activeCard(cardId:number, resultEncryptPassword:string){
   
 
 }
-
-
 
 const cardServices = {
   createCard,
