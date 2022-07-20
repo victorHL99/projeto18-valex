@@ -13,5 +13,6 @@ const cardRouter = Router();
 
 cardRouter.post("/card/create", apiKeyValidate, schemaValidate(cardSchema), cardController.createCard);
 cardRouter.put("/card/active/:cardId", schemaValidate(activeCardSchema), cardController.activeCard);
+cardRouter.get("/card/balance/:cardId", cardController.getBalanceByCard);
 
 export default cardRouter;

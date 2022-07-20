@@ -5,6 +5,8 @@ import bcrypt from 'bcrypt';
 
 import * as employeeRepository from "../repositories/employeeRepository.js"
 import * as cardRepository from "../repositories/cardRepository.js"
+import * as paymentRepository from "../repositories/paymentRepository.js"
+import * as rechargeRepository from "../repositories/rechargeRepository.js"
 
 import {generateCardName} from "./employeeServices.js"
 import { TransactionTypes } from "../repositories/cardRepository.js"
@@ -190,6 +192,55 @@ async function activeCard(cardId:number, resultEncryptPassword:string){
 
 }
 
+async function checkPayment(cardId:number){
+  const checkPayment:any = await paymentRepository.findByCardId(cardId);
+  if(!checkPayment){
+    throw {
+      status: 400,
+      message: "Card without payments"
+    }
+  }
+  
+  const payments = checkPayment.map((payment:any) => ({
+    ...payment,
+    timestamp:dayjs(payment.timestamp).format('DD/MM/YYYY')
+  }))
+
+  return payments;
+}
+
+async function checkRecharge(cardId:number){
+  const checkRecharge:any = await rechargeRepository.findByCardId(cardId);
+  if(!checkRecharge){
+    throw {
+      status: 400,
+      message: "Card without recharge"
+    }
+  }
+
+  const recharges = checkRecharge.map((recharge:any) => ({
+    ...recharge,
+    timestamp:dayjs(recharge.timestamp).format('DD/MM/YYYY')
+  }))
+
+  return recharges;
+}
+
+async function getBalanceByCard(cardId:number, resultCheckPayment:any, resultCheckRecharge:any){
+  let payments = 0;
+  let recharges = 0;
+
+  if(resultCheckPayment.length > 0){
+    payments = resultCheckPayment.map((payment:any) => payment.amount).reduce((previousValue, currentValue) => previousValue + currentValue);
+  }
+
+  if(resultCheckRecharge.length > 0){
+    recharges = resultCheckRecharge.map((recharge:any) => recharge.amount).reduce((previousValue, currentValue) => previousValue + currentValue);
+  }
+
+  return recharges - payments;
+}
+
 const cardServices = {
   createCard,
   verifyConditionsCard,
@@ -199,7 +250,10 @@ const cardServices = {
   checkCardIsYours,
   checkActivedCard,
   checkCvv,
-  encryptPassword
+  encryptPassword,
+  checkPayment,
+  checkRecharge,
+  getBalanceByCard
 }
 
 export default cardServices;

@@ -66,9 +66,33 @@ async function activeCard(req: Request, res: Response){
   res.status(200).json(resultActiveCard);
 }
 
+async function getBalanceByCard(req: Request, res: Response){
+  const cardId:number = parseInt(req.params.cardId)
+
+  const resultCheckCardId:any = await cardServices.findCardById(cardId);
+  const resultCheckPayment:any = await cardServices.checkPayment(cardId);
+  const resultCheckRecharge:any = await cardServices.checkRecharge(cardId);
+  const resultCheckBalance:any = await cardServices.getBalanceByCard(cardId, resultCheckPayment, resultCheckRecharge);
+
+  console.log(resultCheckPayment);
+  console.log(resultCheckRecharge);
+  console.log(resultCheckBalance);
+
+  const finalBalance = {
+    balance: resultCheckBalance,
+    transactions: resultCheckPayment,
+    recharges: resultCheckRecharge
+  }
+
+
+
+  res.status(200).json(finalBalance);
+}
+
 const cardController = {
   createCard,
-  activeCard
+  activeCard,
+  getBalanceByCard
 }
 
 export default cardController;
