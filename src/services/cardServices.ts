@@ -8,15 +8,11 @@ import * as cardRepository from "../repositories/cardRepository.js"
 import {generateCardName} from "./employeeServices.js"
 import { TransactionTypes } from "../repositories/cardRepository.js"
 
-
-
-
 async function generateExpireDate(){
   return dayjs().add(5, 'year').format('MM/YY');
 }
 
 async function verifyConditionsCard(idEmployee:number, cardType:any, company:any){
-  //verify card exist by idEmployee and cardType
   const cardExist:any = await cardRepository.findByTypeAndEmployeeId(cardType, idEmployee);
   if(cardExist){
     throw {
@@ -25,7 +21,6 @@ async function verifyConditionsCard(idEmployee:number, cardType:any, company:any
     }
   }
 
-  //verify if employee exist
   const employeeExist:any = await employeeRepository.findById(idEmployee);
   console.log(employeeExist);
   if(!employeeExist){
@@ -35,7 +30,6 @@ async function verifyConditionsCard(idEmployee:number, cardType:any, company:any
     }
   }
 
-  //verify if employee is from this company
   if(employeeExist.companyId !== company.id){
     throw {
       status: 401,
@@ -94,9 +88,14 @@ async function createCard(
 
 }
 
+async function activeCard(){
+
+}
+
 const cardServices = {
   createCard,
-  verifyConditionsCard
+  verifyConditionsCard,
+  activeCard
 }
 
 export default cardServices;

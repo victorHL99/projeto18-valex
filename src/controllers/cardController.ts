@@ -50,8 +50,14 @@ async function createCard(req: Request, res: Response){
 
 }
 
+async function activeCard(req: Request, res: Response){
+  const password:string = req.body.password;
+  const id:number = req.locals.card.id;
+}
+
 const cardController = {
-  createCard
+  createCard,
+  activeCard
 }
 
 export default cardController;
