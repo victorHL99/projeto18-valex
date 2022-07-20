@@ -1,10 +1,13 @@
 import { faker } from '@faker-js/faker';
 import dayjs from 'dayjs';
+import Cryptr from "cryptr";
 
 import * as employeeRepository from "../repositories/employeeRepository.js"
 import * as cardRepository from "../repositories/cardRepository.js"
 
 import {generateCardName} from "./employeeServices.js"
+import { TransactionTypes } from "../repositories/cardRepository.js"
+
 
 
 
@@ -59,23 +62,33 @@ async function createCard(
   employeeName:string,
   email:string,
   cpf:string,
-  cardType:string,
+  cardType:TransactionTypes,
   companyId:number,
   password:string,
   isVirtual:boolean,
   originalCardId:number){
 
+    const cryptr = new Cryptr(process.env.SECRET_KEY_CRYPTR);
+
     const cardName:string = await generateCardName(employeeName);
     const cardNumber:string = faker.finance.creditCardNumber('63[7-9]#-####-####-###L')
     const expireDate:string =  await generateExpireDate();
     const cvv:string = faker.finance.creditCardCVV();
-    
+    const cvvEncrypted:string = cryptr.encrypt(cvv);
+
+
 
     return {
-      cardName: cardName,
-      cardNumber: cardNumber,
-      expireDate: expireDate,
-      cvv: cvv,
+      employeeId: employeeId,
+      cardholderName: cardName,
+      number: cardNumber,
+      expirationDate: expireDate,
+      securityCode: cvvEncrypted,
+      password: null,
+      isVirtual: false,
+      originalCardId: null,
+      isBlocked: false,
+      type: cardType,
     }
 
 

@@ -1,5 +1,8 @@
 import {Request, Response} from "express";
+import { TransactionTypes } from "../repositories/cardRepository.js"
+
 import cardServices from "../services/cardServices.js";
+import * as cardRepository from "../repositories/cardRepository.js"
 
 async function createCard(req: Request, res: Response){
   const {idEmployee, cardType}:{idEmployee:number, cardType:string} = req.body;
@@ -23,7 +26,7 @@ async function createCard(req: Request, res: Response){
       employeeName:string,
       email:string,
       cpf:string,
-      cardType:string,
+      cardType:TransactionTypes,
       companyId:number,
       password:string,
       isVirtual:boolean,
@@ -40,6 +43,8 @@ async function createCard(req: Request, res: Response){
       isVirtual,
       originalCardId
     );
+
+    await cardRepository.insert(resultCreateCard);
     res.status(200).json(resultCreateCard);
   }
 
