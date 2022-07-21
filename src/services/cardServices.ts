@@ -241,6 +241,44 @@ async function getBalanceByCard(cardId:number, resultCheckPayment:any, resultChe
   return recharges - payments;
 }
 
+async function checkCardBlocked(cardId:number){
+  const cardExist:any = await cardRepository.findById(cardId);
+  console.log(cardExist);
+  if(cardExist.isBlocked){
+    throw {
+      status: 400,
+      message: "Card already blocked"
+    }
+  }
+  return {
+    CardNotBlocked: true
+  }
+}
+
+async function checkCardPassword(cardId:number, password:string){
+  const cardExist:any = await cardRepository.findById(cardId);
+  const passwordHash:string = await bcrypt.compare(password, cardExist.password);
+  if(!passwordHash){
+    throw {
+      status: 400,
+      message: "Password is not valid"
+    }
+  }
+
+  return {
+    PasswordIsValid: true
+  }
+
+}
+
+async function blockCard(cardId:number){
+  const cardData:any = await cardRepository.findById(cardId);
+  cardData.isBlocked = true;
+  await cardRepository.update(cardData.id, cardData);
+
+  return cardData;
+}
+
 const cardServices = {
   createCard,
   verifyConditionsCard,
@@ -253,7 +291,10 @@ const cardServices = {
   encryptPassword,
   checkPayment,
   checkRecharge,
-  getBalanceByCard
+  getBalanceByCard,
+  checkCardBlocked,
+  checkCardPassword,
+  blockCard
 }
 
 export default cardServices;

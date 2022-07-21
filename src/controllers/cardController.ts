@@ -83,10 +83,32 @@ async function getBalanceByCard(req: Request, res: Response){
   res.status(200).json(finalBalance);
 }
 
+async function blockCard(req: Request, res: Response){
+  const cardId:number = parseInt(req.params.cardId)
+  const password:string = req.body.password;
+
+  const resultCheckCardId:any = await cardServices.findCardById(cardId);
+  const resultCheckExpired:any = await cardServices.checkCardExpired(cardId);
+  const resultCheckCardBlocked:any = await cardServices.checkCardBlocked(cardId);
+  const resultCheckCardPassword:any = await cardServices.checkCardPassword(cardId, password);
+
+  const resultBlockedCard:any = await cardServices.blockCard(cardId);
+
+
+  console.log(resultCheckCardId);
+  console.log(resultCheckExpired);
+  console.log(resultCheckCardBlocked);
+  console.log(resultCheckCardPassword);
+  console.log(resultBlockedCard);
+
+  res.status(200).json("Card blocked");
+}
+
 const cardController = {
   createCard,
   activeCard,
-  getBalanceByCard
+  getBalanceByCard,
+  blockCard
 }
 
 export default cardController;
