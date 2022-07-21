@@ -16,5 +16,6 @@ cardRouter.post("/card/create", apiKeyValidate, schemaValidate(cardSchema), card
 cardRouter.put("/card/active/:cardId", schemaValidate(activeCardSchema), cardController.activeCard);
 cardRouter.get("/card/balance/:cardId", cardController.getBalanceByCard);
 cardRouter.put("/card/block/:cardId",schemaValidate(blockCardSchema), cardController.blockCard);
+cardRouter.put("/card/unlock/:cardId", schemaValidate(blockCardSchema), cardController.unlockCard);
 
 export default cardRouter;

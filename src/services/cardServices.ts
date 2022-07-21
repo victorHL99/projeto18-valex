@@ -243,7 +243,6 @@ async function getBalanceByCard(cardId:number, resultCheckPayment:any, resultChe
 
 async function checkCardBlocked(cardId:number){
   const cardExist:any = await cardRepository.findById(cardId);
-  console.log(cardExist);
   if(cardExist.isBlocked){
     throw {
       status: 400,
@@ -279,6 +278,28 @@ async function blockCard(cardId:number){
   return cardData;
 }
 
+async function checkCardUnlock(cardId:number){
+  const cardExist:any = await cardRepository.findById(cardId);
+  if(!cardExist.isBlocked){
+    throw {
+      status: 400,
+      message: "Card already unlocked"
+    }
+  }
+  return {
+    CardNotUnlocked: true
+  }
+}
+
+async function unlockCard(cardId:number){
+  const cardData:any = await cardRepository.findById(cardId);
+  cardData.isBlocked = false;
+  await cardRepository.update(cardData.id, cardData);
+
+  return cardData;
+}
+
+
 const cardServices = {
   createCard,
   verifyConditionsCard,
@@ -294,7 +315,9 @@ const cardServices = {
   getBalanceByCard,
   checkCardBlocked,
   checkCardPassword,
-  blockCard
+  blockCard,
+  checkCardUnlock,
+  unlockCard
 }
 
 export default cardServices;
