@@ -23,10 +23,6 @@ async function createPayment(req: Request, res:Response){
 
   const resultCreateBuy:any = await paymentsServices.createBuy(paymentData.cardId, paymentData.businessId, paymentData.amount);
 
-  console.log(resultCheckCardBalance.balance);
-  console.log(resultCheckValidateBuy)
-
-
   res.status(200).send({
     message: "Payment created"
   });
