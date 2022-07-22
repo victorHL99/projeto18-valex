@@ -145,7 +145,7 @@ async function checkActivedCard(cardId:number){
   if(cardExist.password !== null){
     throw {
       status: 400,
-      message: "Card is actived"
+      message: "Card is actived",
     }
   }
   return {
@@ -299,6 +299,18 @@ async function unlockCard(cardId:number){
   return cardData;
 }
 
+async function verifyCardActivedRecharge(cardId:number){
+  const cardData:any = await cardRepository.findById(cardId);
+  if(cardData.password === null){
+    throw {
+      status: 400,
+      message: "Card not activated"
+    }
+  }
+  return {
+    CardActived: true
+  }
+}
 
 const cardServices = {
   createCard,
@@ -317,7 +329,8 @@ const cardServices = {
   checkCardPassword,
   blockCard,
   checkCardUnlock,
-  unlockCard
+  unlockCard,
+  verifyCardActivedRecharge
 }
 
 export default cardServices;
